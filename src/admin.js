@@ -1,4 +1,7 @@
 const API_BASE_URL = '/api';
+const baseUrl = import.meta.env.BASE_URL;
+const pageUrl = (page) => `${baseUrl}${page}`;
+const assetUrl = (path) => `${baseUrl}${path}`;
 
 // Protect admin panel - redirect non-admin users
 function checkAdminAccess() {
@@ -9,7 +12,7 @@ function checkAdminAccess() {
   if (!adminToken) {
     // If they're a regular user, redirect to home
     if (userData) {
-      window.location.href = '/index.html';
+      window.location.href = pageUrl('index.html');
       return;
     }
     // If they're not logged in, let the login form show
@@ -216,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.className = 'list-group-item product-item';
         div.innerHTML = `
           <div class="product-info">
-            <img src="${product.image}" alt="${product.name}" class="me-3" onerror="this.src='/images/default.jpg'">
+            <img src="${product.image}" alt="${product.name}" class="me-3" onerror="this.src='${assetUrl('images/snack_product.png')}'">
             <div>
               <h6 class="mb-0">${product.name}</h6>
               <p class="mb-0 text-muted" style="font-size: 0.85rem;">₹${product.price.toFixed(2)} | ${product.description || ''}</p>
@@ -348,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.className = 'list-group-item product-item';
         div.innerHTML = `
           <div class="product-info">
-            ${blog.image ? `<img src="${blog.image}" alt="${blog.title}" class="me-3" onerror="this.src='/images/default.jpg'">` : '<div class="me-3" style="width: 60px; height: 60px; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 24px;">📝</div>'}
+            ${blog.image ? `<img src="${blog.image}" alt="${blog.title}" class="me-3" onerror="this.src='${assetUrl('images/snack_product.png')}'">` : '<div class="me-3" style="width: 60px; height: 60px; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 24px;">📝</div>'}
             <div>
               <h6 class="mb-0">${blog.title}</h6>
               <p class="mb-0 text-muted" style="font-size: 0.85rem;">${blog.category} | By ${blog.author_name || 'Admin'}</p>

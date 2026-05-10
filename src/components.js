@@ -1,5 +1,9 @@
 import { shopContactInfo } from './contact-info.js';
 
+const baseUrl = import.meta.env.BASE_URL;
+const pageUrl = (page) => `${baseUrl}${page}`;
+const assetUrl = (path) => `${baseUrl}${path}`;
+
 /**
  * Common Navigation and Footer Components
  * This script injects the shared navbar and footer into all pages.
@@ -7,17 +11,17 @@ import { shopContactInfo } from './contact-info.js';
 
 const NavbarHTML = `
   <nav class="navbar">
-    <a href="/index.html" class="nav-brand">
-      <img src="/images/tasty-treats-logo.jpg" alt="Tasty Treats logo" class="brand-logo" />
+    <a href="${pageUrl('index.html')}" class="nav-brand">
+      <img src="${assetUrl('images/tasty-treats-logo.jpg')}" alt="Tasty Treats logo" class="brand-logo" />
       <span>Tasty Treats</span>
     </a>
     <button class="menu-toggle" id="mobile-menu-btn" aria-label="Open navigation menu">&#9776;</button>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/index.html">Home</a></li>
-      <li><a href="/menu.html">Menu</a></li>
-      <li><a href="/blog.html">Blog</a></li>
-      <li><a href="/about.html">About</a></li>
-      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="${pageUrl('index.html')}">Home</a></li>
+      <li><a href="${pageUrl('menu.html')}">Menu</a></li>
+      <li><a href="${pageUrl('blog.html')}">Blog</a></li>
+      <li><a href="${pageUrl('about.html')}">About</a></li>
+      <li><a href="${pageUrl('contact.html')}">Contact</a></li>
       <li class="user-dropdown">
         <button class="user-icon-btn" id="user-menu-btn" aria-label="Open user menu">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -26,13 +30,13 @@ const NavbarHTML = `
         </button>
         <div class="dropdown-menu" id="user-dropdown-menu">
           <div id="unauthenticated-links">
-            <a href="/login.html" class="dropdown-item">Login / Sign Up</a>
+            <a href="${pageUrl('login.html')}" class="dropdown-item">Login / Sign Up</a>
           </div>
           <div id="authenticated-links" style="display: none;">
             <div class="dropdown-item" style="border-bottom: 1px solid var(--glass-border); margin-bottom: 5px;">
               <span id="display-user-name" style="font-weight: 600;"></span>
             </div>
-            <a href="/admin.html" class="dropdown-item">Admin Panel</a>
+            <a href="${pageUrl('admin.html')}" class="dropdown-item">Admin Panel</a>
             <a href="#" id="logout-action" class="dropdown-item" style="color: #ff4d4d;">Logout</a>
           </div>
         </div>
@@ -46,7 +50,7 @@ const FooterHTML = `
     <div class="footer-content">
       <div class="footer-section">
         <h3 class="footer-brand">
-          <img src="/images/tasty-treats-logo.jpg" alt="Tasty Treats logo" class="footer-logo" />
+          <img src="${assetUrl('images/tasty-treats-logo.jpg')}" alt="Tasty Treats logo" class="footer-logo" />
           <span>Tasty Treats</span>
         </h3>
         <p>Your sanctuary in the city for premium organic teas and artisanal snacks.</p>
@@ -64,11 +68,11 @@ const FooterHTML = `
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="/index.html">Home</a></li>
-          <li><a href="/menu.html">Menu</a></li>
-          <li><a href="/blog.html">Blog</a></li>
-          <li><a href="/about.html">About Us</a></li>
-          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="${pageUrl('index.html')}">Home</a></li>
+          <li><a href="${pageUrl('menu.html')}">Menu</a></li>
+          <li><a href="${pageUrl('blog.html')}">Blog</a></li>
+          <li><a href="${pageUrl('about.html')}">About Us</a></li>
+          <li><a href="${pageUrl('contact.html')}">Contact</a></li>
         </ul>
       </div>
       <div class="footer-section">
@@ -76,7 +80,7 @@ const FooterHTML = `
         <ul class="footer-links">
           <li><a href="${shopContactInfo.phoneHref}">ph: ${shopContactInfo.phoneDisplay}</a></li>
           <li><a href="mailto:${shopContactInfo.email}">Email: ${shopContactInfo.email}</a></li>
-          <li><a href="/contact.html">Location: ${shopContactInfo.location}</a></li>
+          <li><a href="${pageUrl('contact.html')}">Location: ${shopContactInfo.location}</a></li>
         </ul>
       </div>
     </div>
@@ -133,7 +137,7 @@ function updateUserUI() {
   const unauthLinks = document.getElementById('unauthenticated-links');
   const authLinks = document.getElementById('authenticated-links');
   const userNameSpan = document.getElementById('display-user-name');
-  const adminPanelLink = document.querySelector('a[href="/admin.html"]');
+  const adminPanelLink = document.querySelector(`a[href="${pageUrl('admin.html')}"]`);
 
   // Check if user is logged in (either as regular user or admin)
   if ((userData || adminToken) && unauthLinks && authLinks) {
@@ -175,7 +179,7 @@ window.handleCredentialResponse = (response) => {
   updateUserUI();
 
   if (window.location.pathname.includes('login.html')) {
-    window.location.href = '/index.html';
+    window.location.href = pageUrl('index.html');
   } else {
     window.location.reload();
   }

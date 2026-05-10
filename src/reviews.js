@@ -2,6 +2,21 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE_URLS = [''];
+  const hasBackend = !window.location.hostname.endsWith('github.io');
+  const fallbackReviews = [
+    {
+      user_name: 'Amina',
+      rating: 5,
+      review_text: 'Lovely tea, fresh snacks, and a calm place to unwind.',
+      created_at: '2026-05-01'
+    },
+    {
+      user_name: 'Rahul',
+      rating: 5,
+      review_text: 'The masala chai and samosa combo is my favorite.',
+      created_at: '2026-05-03'
+    }
+  ];
   const reviewForm = document.getElementById('review-form');
   const ratingStars = document.querySelectorAll('#rating-stars .star');
   const ratingInput = document.getElementById('rating');
@@ -59,6 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
+        if (!hasBackend) {
+          showMessage('Reviews are view-only on GitHub Pages. Please contact us on WhatsApp to share feedback.', 'error');
+          return;
+        }
+
         const response = await apiFetch('/api/reviews', {
           method: 'POST',
           headers: {
@@ -97,6 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadReviews() {
     try {
+      if (!hasBackend) {
+        reviewsList.innerHTML = '';
+        fallbackReviews.forEach((review, index) => {
+          reviewsList.appendChild(createReviewElement(review, index));
+        });
+        return;
+      }
+
       const response = await apiFetch('/api/reviews');
       const reviews = await response.json();
 

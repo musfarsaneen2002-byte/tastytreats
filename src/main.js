@@ -1,5 +1,73 @@
 import './style.css'
 
+const baseUrl = import.meta.env.BASE_URL;
+const pageUrl = (page) => `${baseUrl}${page}`;
+const assetUrl = (path) => `${baseUrl}${path}`;
+const hasBackend = !window.location.hostname.endsWith('github.io');
+
+const fallbackProducts = [
+  {
+    id: 1,
+    name: 'Masala Chai',
+    description: 'Freshly brewed spiced tea with milk and aromatic Indian spices.',
+    price: 20,
+    category: 'tea',
+    image: assetUrl('images/masala_chai.jpg')
+  },
+  {
+    id: 2,
+    name: 'Samosa',
+    description: 'Crispy pastry filled with a warm, savory potato masala.',
+    price: 15,
+    category: 'snack',
+    image: assetUrl('images/samosa.jpg')
+  },
+  {
+    id: 3,
+    name: 'Fresh Juice',
+    description: 'Refreshing fruit juice made fresh for a bright tea-time pairing.',
+    price: 40,
+    category: 'juice',
+    image: assetUrl('images/juice_product.png')
+  }
+];
+
+const fallbackBlogs = [
+  {
+    id: 1,
+    title: 'How to Make Authentic Masala Chai at Home',
+    category: 'Tea',
+    content: 'A perfect masala chai starts with patient brewing, fresh spices, and tea leaves that can hold their flavor with milk. Try ginger, cardamom, cinnamon, and cloves for a rich cup.',
+    image: assetUrl('images/masala_chai.jpg'),
+    created_at: '2026-05-01',
+    author_name: 'Tasty Treats'
+  },
+  {
+    id: 2,
+    title: 'Tea-Time Snacks We Love',
+    category: 'Snacks',
+    content: 'Crispy samosas, pakoras, and parippu vada bring warmth and crunch to a good tea break. The best pairings balance spice, texture, and freshness.',
+    image: assetUrl('images/samosa.jpg'),
+    created_at: '2026-05-02',
+    author_name: 'Tasty Treats'
+  }
+];
+
+async function fetchJson(path, fallback) {
+  if (!hasBackend) {
+    return fallback;
+  }
+
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.warn(`Using static fallback for ${path}`, error);
+    return fallback;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Intersection Observer for scroll animations
   const observerOptions = {
@@ -34,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement('div');
       card.className = `menu-card ${delayClass}`;
       card.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="menu-img" onerror="this.src='/images/default.jpg'" onload="this.classList.add('loaded')" />
+        <img src="${product.image}" alt="${product.name}" class="menu-img" onerror="this.src='${assetUrl('images/snack_product.png')}'" onload="this.classList.add('loaded')" />
         <h3>${product.name}</h3>
         <p class="description">${product.description || ''}</p>
         <p class="price">₹${product.price.toFixed(2)}</p>
@@ -45,8 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (menuGrid) {
-    fetch('/api/products')
-      .then(response => response.json())
+    fetchJson('/api/products', fallbackProducts)
       .then(products => {
         allProducts = products;
         renderMenu(allProducts);
@@ -68,8 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Latest Blog Logic ---
   const latestBlogContainer = document.getElementById('latest-blog-container');
   if (latestBlogContainer) {
-    fetch('/api/blogs?limit=1')
-      .then(response => response.json())
+    fetchJson('/api/blogs?limit=1', fallbackBlogs.slice(0, 1))
       .then(blogs => {
         if (blogs && blogs.length > 0) {
           const blog = blogs[0];
@@ -82,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="blog-meta">${blog.category || 'Lifestyle'} • ${new Date(blog.created_at).toLocaleDateString()}</div>
                 <h3 class="latest-blog-title">${blog.title}</h3>
                 <p class="latest-blog-excerpt">${blog.content.substring(0, 200)}...</p>
-                <a href="/blog.html" class="latest-blog-link">Read More on Our Blog →</a>
+                <a href="${pageUrl('blog.html')}" class="latest-blog-link">Read More on Our Blog →</a>
               </div>
             </div>
           `;
@@ -101,8 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Blog Logic ---
   const blogGrid = document.getElementById('blog-grid');
   if (blogGrid) {
-    fetch('/api/blogs')
-      .then(response => response.json())
+    fetchJson('/api/blogs', fallbackBlogs)
       .then(blogs => {
         blogGrid.innerHTML = '';
         if (blogs.length === 0) {
@@ -146,8 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Blog Modal ---
   function showBlogModal(blogId) {
-    fetch('/api/blogs')
-      .then(response => response.json())
+    fetchJson('/api/blogs', fallbackBlogs)
       .then(blogs => {
         const blog = blogs.find(b => b.id == blogId);
         if (blog) {
@@ -221,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('adminData');
           localStorage.setItem('userData', JSON.stringify(data.user));
           localStorage.setItem('userToken', data.token);
-          window.location.href = '/index.html';
+          window.location.href = pageUrl('index.html');
         } else {
           const adminResponse = await fetch('/api/auth/login', {
             method: 'POST',
@@ -235,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('userToken');
             localStorage.setItem('adminToken', adminData.token);
             localStorage.setItem('adminData', JSON.stringify(adminData.admin));
-            window.location.href = '/admin.html';
+            window.location.href = pageUrl('admin.html');
           } else {
             errorDiv.textContent = adminData.error || data.error || 'Login failed';
             errorDiv.style.display = 'block';
