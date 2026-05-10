@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Tasty Treats</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+  <style>
+    /* Admin specific styles */
+    .dashboard-container { display: none; background: #f8f9fa; min-height: 100vh; padding-top: 80px; }
+    .login-container { display: flex; align-items: center; justify-content: center; min-height: 80vh; padding-top: 80px; }
+    .login-card { width: 100%; max-width: 400px; background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .login-card h2 { margin-bottom: 30px; text-align: center; color: #333; font-weight: 600; }
+    .error-message { color: #dc3545; margin-top: 10px; text-align: center; display: none; }
+    .success-message { color: #28a745; margin-top: 10px; text-align: center; display: none; }
+    .tab-content { margin-top: 20px; }
+    .card { border-radius: 10px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.08); color: #333; }
+    .card-header { background: white; border-bottom: 2px solid #e9ecef; padding: 15px 20px; font-weight: 600; color: #333; }
+    .product-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .product-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+    .user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #e9ecef; color: #333; }
+    #admin-name { font-weight: 600; color: #667eea; }
+    .dashboard-container .container { max-width: 1200px; }
+    .dashboard-container .nav-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; }
+    .dashboard-container .nav-link { white-space: nowrap; }
+    .list-group-item { gap: 12px; }
+    .list-group-item > div { min-width: 0; }
+    .list-group-item h6,
+    .list-group-item p,
+    .list-group-item small { overflow-wrap: anywhere; }
+    @media (max-width: 768px) {
+      .dashboard-container { padding-top: 72px; }
+      .login-container { min-height: auto; padding: 96px 1rem 2rem; }
+      .login-card { padding: 24px 18px; border-radius: 12px; }
+      .dashboard-container .d-flex.justify-content-between { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+      .product-item,
+      .user-item,
+      .list-group-item { flex-direction: column; align-items: flex-start !important; }
+      .product-item .btn,
+      .user-item .btn,
+      .list-group-item .btn { width: 100%; margin-top: 6px; }
+      .card-header.d-flex { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+      .modal-dialog { margin: 0.75rem; }
+    }
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <!-- Login Section -->
+  <div class="login-container" id="login-section">
+    <div class="login-card">
+      <h2>Admin Login</h2>
+      <form id="login-form">
+        <div class="mb-3">
+          <input type="email" class="form-control" id="login-email" placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control" id="login-password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+        
+        <div style="margin: 20px 0; display: flex; align-items: center; gap: 10px;">
+          <hr style="flex: 1; border-color: #eee;">
+          <span style="color: #999; font-size: 12px; text-transform: uppercase;">or</span>
+          <hr style="flex: 1; border-color: #eee;">
+        </div>
+
+        <div style="display: flex; justify-content: center;">
+          <div id="g_id_onload"
+               data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+               data-callback="handleCredentialResponse">
+          </div>
+          <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="medium" data-logo_alignment="left"></div>
+        </div>
+
+        <div class="error-message" id="login-error"></div>
+        <div style="text-align: center; margin-top: 15px; color: #666; font-size: 14px;">
+          No account?
+          <a href="#" id="toggle-register" style="color: #667eea; text-decoration: none; font-weight: 600;">Register here</a>
+        </div>
+      </form>
+
+      <form id="register-form" style="display: none;">
+        <h3 style="font-size: 18px; margin-bottom: 20px;">Create Admin Account</h3>
+        <input type="email" class="form-control mb-3" id="register-email" placeholder="Email" required>
+        <input type="password" class="form-control mb-3" id="register-password" placeholder="Password (min 6 chars)" required>
+        <input type="text" class="form-control mb-3" id="register-name" placeholder="Admin Name" required>
+        <button type="submit" class="btn btn-success w-100">Register</button>
+        <div class="error-message" id="register-error"></div>
+        <div class="success-message" id="register-success"></div>
+        <div style="text-align: center; margin-top: 15px; color: #666; font-size: 14px;">
+          Already have an account?
+          <a href="#" id="toggle-login" style="color: #667eea; text-decoration: none; font-weight: 600;">Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div class="dashboard-container" id="dashboard-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: #333;">🎉 Admin Dashboard</h2>
+        <span id="admin-name"></span>
+      </div>
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#products-tab" role="tab">📦 Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#blogs-tab" role="tab">📝 Blogs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#users-tab" role="tab">👥 Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#admins-tab" role="tab">🔐 Admins</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-pane fade show active">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header">Add New Product</div>
+                <div class="card-body">
+                  <form id="add-product-form">
+                    <div class="mb-3">
+                      <label class="form-label">Product Name</label>
+                      <input type="text" class="form-control" id="product-name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Description</label>
+                      <textarea class="form-control" id="product-desc" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Price</label>
+                      <input type="number" class="form-control" id="product-price" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Category</label>
+                      <select class="form-select" id="product-category" required>
+                        <option value="category" disabled selected>Select a category</option>
+                        <option value="tea">Tea</option>
+                        <option value="snack">Snack</option>
+                        <option value="juice">Juice</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Image</label>
+                      <input type="file" class="form-control" id="product-image" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Add Product</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Manage Products</div>
+                <div class="card-body">
+                  <div class="list-group" id="products-list" style="max-height: 600px; overflow-y: auto;">
+                    <!-- Products will be loaded here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blogs Tab -->
+        <div id="blogs-tab" class="tab-pane fade">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header">Add New Blog</div>
+                <div class="card-body">
+                  <form id="add-blog-form">
+                    <div class="mb-3">
+                      <label class="form-label">Blog Title</label>
+                      <input type="text" class="form-control" id="blog-title" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Category</label>
+                      <input type="text" class="form-control" id="blog-category" placeholder="e.g., Tips, News, etc." required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Content</label>
+                      <textarea class="form-control" id="blog-content" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Image (optional)</label>
+                      <input type="file" class="form-control" id="blog-image" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Add Blog</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Manage Blogs</div>
+                <div class="card-body">
+                  <div class="list-group" id="blogs-list" style="max-height: 600px; overflow-y: auto;">
+                    <!-- Blogs will be loaded here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-tab" class="tab-pane fade">
+          <div class="card">
+            <div class="card-header">Registered Users</div>
+            <div class="card-body">
+              <div id="users-list" style="max-height: 600px; overflow-y: auto;">
+                <!-- Users will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admins Tab -->
+        <div id="admins-tab" class="tab-pane fade">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Registered Admins</span>
+              <button class="btn btn-sm btn-success" id="add-admin-btn">Add New Admin</button>
+            </div>
+            <div class="card-body">
+              <div id="admins-list" style="max-height: 600px; overflow-y: auto;">
+                <!-- Admins will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Modals -->
+  <!-- Edit Product Modal -->
+  <div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="color: #333;">Edit Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-product-form">
+            <input type="hidden" id="edit-product-id">
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="edit-product-name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="edit-product-desc" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Price</label>
+              <input type="number" class="form-control" id="edit-product-price" step="0.01" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <select class="form-select" id="edit-product-category" required>
+                <option value="tea">Tea</option>
+                <option value="snack">Snack</option>
+                <option value="juice">Juice</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Image (leave empty to keep current)</label>
+              <input type="file" class="form-control" id="edit-product-image" accept="image/*">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="save-edit-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Blog Modal -->
+  <div class="modal fade" id="editBlogModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="color: #333;">Edit Blog</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-blog-form">
+            <input type="hidden" id="edit-blog-id">
+            <div class="mb-3">
+              <label class="form-label">Blog Title</label>
+              <input type="text" class="form-control" id="edit-blog-title" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <input type="text" class="form-control" id="edit-blog-category" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea class="form-control" id="edit-blog-content" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Image (leave empty to keep current)</label>
+              <input type="file" class="form-control" id="edit-blog-image" accept="image/*">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="save-edit-blog-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/src/components.js"></script>
+  <script type="module" src="/src/admin.js"></script>
+</body>
+</html>

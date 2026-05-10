@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Tasty Treats</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <section class="section" style="margin-top: 80px;">
+    <h1 class="section-title animate-in">Get in Touch</h1>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto;">
+      <div class="contact-container animate-in delay-1">
+        <h3 style="margin-top: 0; margin-bottom: 2rem; color: var(--accent-matcha);">WhatsApp Enquiry</h3>
+        <form id="whatsapp-enquiry-form">
+          <div class="form-group">
+            <input type="text" id="customer-name" class="form-control" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="customer-email" class="form-control" placeholder="Your Email" required>
+          </div>
+          <div class="form-group">
+            <textarea id="customer-message" class="form-control" placeholder="Your order or enquiry details" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Send on WhatsApp</button>
+          <div id="whatsapp-form-message" class="form-message success" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="contact-info animate-in delay-1" style="background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--glass-blur); border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; justify-content: center;">
+        <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--accent-matcha);">Visit Us</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">📍 Location</h4>
+          <p id="shop-location" style="color: var(--text-secondary);">Thirurkad, Malappuram, Kerala, India</p>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">🕐 Hours</h4>
+          <p style="color: var(--text-secondary);"><span id="shop-days">Monday - Sunday</span><br><span id="shop-hours">1:00 PM - 10:00 PM</span></p>
+        </div>
+        <div>
+          <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">📞 Phone</h4>
+          <p style="color: var(--text-secondary);"><a id="shop-phone" href="tel:+917511118558" style="color: inherit;">+91 7511118558</a></p>
+          <a id="shop-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 0.75rem; display: inline-flex;">Order Enquiry on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-container animate-in delay-2">
+      <h2 style="text-align: center; margin-bottom: 2rem; color: var(--accent-matcha);">Find Us on the Map</h2>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.5959651594833!2d76.13471!3d11.59395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7d8a4a4a4a4a5%3A0x4a4a4a4a4a4a4a4a!2sThirurkad%2C%20Malappuram%2C%20Kerala!5e0!3m2!1sen!2sin!4v1234567890" width="100%" height="400" style="border: none; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script type="module" src="/src/components.js"></script>
+  <script type="module" src="/src/contact.js"></script>
+</body>
+
+</html>

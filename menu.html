@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu | Tasty Treats</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <section class="section" style="margin-top: 80px;">
+    <h1 class="section-title">Our Signature Menu</h1>
+    
+    <div class="category-filter">
+      <button class="filter-btn active" data-filter="all">All Items</button>
+      <button class="filter-btn" data-filter="tea">Teas</button>
+      <button class="filter-btn" data-filter="juice">Juices</button>
+      <button class="filter-btn" data-filter="snack">Snacks</button>
+    </div>
+
+    <div class="menu-grid" id="menu-grid">
+      <!-- Products will be loaded from the database -->
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script type="module" src="/src/components.js"></script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

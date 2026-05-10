@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Tasty Treats</title>
+  <desc id="logo-desc">A warm tea cup with a leaf for the Tasty Treats brand.</desc>
+  <defs>
+    <linearGradient id="cup-gradient" x1="23" x2="73" y1="35" y2="77" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D98A44"/>
+      <stop offset="1" stop-color="#A65F2E"/>
+    </linearGradient>
+    <linearGradient id="leaf-gradient" x1="38" x2="68" y1="14" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B9DCA1"/>
+      <stop offset="1" stop-color="#6F8F5A"/>
+    </linearGradient>
+  </defs>
+  <circle cx="48" cy="48" r="44" fill="#121212"/>
+  <circle cx="48" cy="48" r="40" fill="none" stroke="#8DA97A" stroke-width="3"/>
+  <path fill="url(#leaf-gradient)" d="M57.7 15.1c-9.9 1.5-17.2 8.7-18.2 18.4 9.8 1.1 18.3-3.5 23.1-12.3 1.3-2.4-2.3-6.5-4.9-6.1Z"/>
+  <path fill="none" stroke="#F5F5F5" stroke-linecap="round" stroke-width="3" d="M40.2 33.3c6.7-3.2 11.8-7.4 15.7-13"/>
+  <path fill="#F5F5F5" d="M27 42h40v17.4C67 71 58.4 79 47 79S27 71 27 59.4V42Z"/>
+  <path fill="url(#cup-gradient)" d="M32 47h30v12.7C62 67.5 55.9 73 47 73s-15-5.5-15-13.3V47Z"/>
+  <path fill="none" stroke="#F5F5F5" stroke-linecap="round" stroke-width="6" d="M66 49h4.5c4.1 0 7.5 3.3 7.5 7.5S74.6 64 70.5 64H66"/>
+  <path fill="none" stroke="#8DA97A" stroke-linecap="round" stroke-width="4" d="M34 84h28"/>
+  <path fill="none" stroke="#F5F5F5" stroke-linecap="round" stroke-width="3" d="M37 29c-2-3.6-1.3-7 .9-10M48 31c-2.2-4-.9-7.2 1.7-9.7"/>
+</svg>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Tasty Treats</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <section class="section" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; margin-top: 50px;">
+    <div class="contact-container" style="max-width: 450px; text-align: center;">
+      
+      <!-- Login Form -->
+      <div id="login-form-container">
+        <h1 class="section-title" style="margin-bottom: 1rem;">Welcome Back</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Log in to your account</p>
+        
+        <form id="user-login-form" style="text-align: left;">
+          <div class="form-group">
+            <input type="email" id="login-email" class="form-control" placeholder="Email Address" required>
+          </div>
+          <div class="form-group">
+            <input type="password" id="login-password" class="form-control" placeholder="Password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" style="margin-bottom: 1.5rem;">Login</button>
+          <div id="login-error" style="color: #ff4d4d; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; display: none;"></div>
+        </form>
+
+        <div style="margin: 1.5rem 0; display: flex; align-items: center; gap: 10px;">
+          <hr style="flex: 1; border-color: var(--glass-border);">
+          <span style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">or</span>
+          <hr style="flex: 1; border-color: var(--glass-border);">
+        </div>
+
+        <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+          <div id="g_id_onload"
+               data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+               data-callback="handleCredentialResponse">
+          </div>
+          <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left" data-width="250"></div>
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Don't have an account? <a href="#" id="show-signup" style="color: var(--accent-matcha); font-weight: 600;">Sign Up</a>
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signup-form-container" style="display: none;">
+        <h1 class="section-title" style="margin-bottom: 1rem;">Create Account</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Join Tasty Treats today</p>
+        
+        <form id="user-signup-form" style="text-align: left;">
+          <div class="form-group">
+            <input type="text" id="signup-name" class="form-control" placeholder="Full Name" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="signup-email" class="form-control" placeholder="Email Address" required>
+          </div>
+          <div class="form-group">
+            <input type="password" id="signup-password" class="form-control" placeholder="Password (min 6 characters)" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary w-100" style="margin-bottom: 1.5rem; background: var(--accent-amber); border-color: var(--accent-amber);">Sign Up</button>
+          <div id="signup-error" style="color: #ff4d4d; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; display: none;"></div>
+          <div id="signup-success" style="color: var(--accent-matcha); font-size: 0.9rem; margin-bottom: 1rem; text-align: center; display: none;"></div>
+        </form>
+
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Already have an account? <a href="#" id="show-login" style="color: var(--accent-matcha); font-weight: 600;">Login</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script type="module" src="/src/components.js"></script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
